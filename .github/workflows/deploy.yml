@@ -76,6 +76,10 @@ jobs:
           password: ${{ secrets.VM_PASSWORD }}
           envs: ACR_LOGIN_SERVER,ACR_NAME,IMAGE_NAME,IMAGE_TAG
           script: |
+            # Login to ACR using VM's managed identity
+            az login --identity
+            az acr login --name $ACR_NAME
+
             # Update docker-compose.yml with new image tag
             cd /home/vietvo/sample-angular-19
             yq -i ".services.angular-app.image = \"$ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG\"" docker-compose.yml
